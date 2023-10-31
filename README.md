@@ -1,2 +1,6 @@
 # Rust-Cpp-Benchmarks
-An Evaluation of Rust and C++ as System Level Languages for their Security and Performance
+An Evaluation of Rust and C++ as System Level Languages for their Security and Performance. 
+
+## Type Safety
+## Concurrency
+
