@@ -48,4 +48,7 @@ In Rust, buffer overflows are not undefined behavior; they are checked at runtim
 thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 4', src/main.rs:7:9
 ```
 
+## Null Pointer Dereferencing
+## Memory Leak
+## Use After Free
 
