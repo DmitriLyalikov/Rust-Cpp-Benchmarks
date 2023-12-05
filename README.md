@@ -219,3 +219,137 @@ int main() {
 ###
 In C++, attempting to use memory after it has been freed is undefined behavior. The example demonstrates using memory after it has been deallocated, which can lead to unpredictable program behavior. Proper memory management, including avoiding use after free, is crucial in C++ programming.
 
+### Race Conditions
+Rust Code:
+```
+use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}
+```
+Rust Documentation:
+In Rust, the code demonstrates a race condition where multiple threads concurrently access and modify a shared counter without proper synchronization. This can lead to unpredictable results, and in this case, the final count may not be what's expected due to the race condition. In Rust, the code demonstrates a race condition where multiple threads concurrently access and modify a shared counter without proper synchronization. Rust's ownership and borrowing system ensures memory safety but does not prevent race conditions. The expected behavior includes unpredictable results in the final count due to the race condition.
+
+C++ Code:
+```
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+int main() {
+    std::mutex counterMutex;
+    int counter = 0;
+
+    std::vector<std::thread> threads;
+
+    for (int i = 0; i < 10; ++i) {
+        threads.emplace_back([&counter, &counterMutex]() {
+            std::lock_guard<std::mutex> lock(counterMutex);
+            ++counter;
+        });
+    }
+
+    for (auto& thread : threads) {
+        thread.join();
+    }
+
+    std::cout << "Result: " << counter << std::endl;
+
+    return 0;
+}
+```
+C++ Documentation:
+In C++, the code demonstrates a similar race condition scenario where multiple threads concurrently modify a shared counter without proper synchronization. The final count may not be as expected due to the race condition. In C++, the code also illustrates a race condition scenario where multiple threads concurrently modify a shared counter without proper synchronization. C++ does not inherently prevent race conditions, and the expected behavior includes unpredictable results in the final count due to the race condition.
+
+### Deadlock
+Rust Code:
+```
+use std::sync::{Mutex, Arc};
+use std::thread;
+
+fn main() {
+    let resource1 = Arc::new(Mutex::new(()));
+    let resource2 = Arc::new(Mutex::new(()));
+
+    let resource1_clone = Arc::clone(&resource1);
+    let resource2_clone = Arc::clone(&resource2);
+
+    let handle1 = thread::spawn(move || {
+        let _lock1 = resource1_clone.lock().unwrap();
+        // Simulate some work
+        thread::sleep(std::time::Duration::from_millis(100));
+        let _lock2 = resource2_clone.lock().unwrap();
+        println!("Thread 1 acquired both resources");
+    });
+
+    let handle2 = thread::spawn(move || {
+        let _lock1 = resource2.lock().unwrap();
+        // Simulate some work
+        thread::sleep(std::time::Duration::from_millis(100));
+        let _lock2 = resource1.lock().unwrap();
+        println!("Thread 2 acquired both resources");
+    });
+
+    handle1.join().unwrap();
+    handle2.join().unwrap();
+}
+```
+Rust Documentation:
+The Rust code demonstrates a potential deadlock scenario where two threads attempt to acquire two mutex-protected resources in a different order. Each thread holds one resource and attempts to acquire the other, resulting in a deadlock where neither thread can proceed. The Rust code showcases a potential deadlock scenario where two threads attempt to acquire two mutex-protected resources in different orders. Rust's ownership system ensures memory safety, but it doesn't inherently prevent deadlocks. The expected behavior involves the program becoming deadlocked, with neither thread able to proceed.
+
+C++ Code:
+```
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+int main() {
+    std::mutex resource1Mutex;
+    std::mutex resource2Mutex;
+
+    std::thread thread1([&resource1Mutex, &resource2Mutex]() {
+        std::lock_guard<std::mutex> lock1(resource1Mutex);
+        // Simulate some work
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::lock_guard<std::mutex> lock2(resource2Mutex);
+        std::cout << "Thread 1 acquired both resources" << std::endl;
+    });
+
+    std::thread thread2([&resource1Mutex, &resource2Mutex]() {
+        std::lock_guard<std::mutex> lock2(resource2Mutex);
+        // Simulate some work
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::lock_guard<std::mutex> lock1(resource1Mutex);
+        std::cout << "Thread 2 acquired both resources" << std::endl;
+    });
+
+    thread1.join();
+    thread2.join();
+
+    return 0;
+}
+```
+C++ Documentation:
+The C++ code demonstrates a similar deadlock scenario where two threads attempt to acquire two mutex-protected resources in a different order. This can lead to a situation where both threads are waiting for each other, resulting in a deadlock. The C++ code demonstrates a potential deadlock scenario where two threads attempt to acquire two mutex-protected resources in different orders. C++ does not automatically detect or prevent deadlocks. The expected behavior involves the program becoming deadlocked, with neither thread able to proceed.
+
+
+
