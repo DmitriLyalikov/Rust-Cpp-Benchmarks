@@ -352,4 +352,26 @@ C++ Documentation:
 The C++ code demonstrates a similar deadlock scenario where two threads attempt to acquire two mutex-protected resources in a different order. This can lead to a situation where both threads are waiting for each other, resulting in a deadlock. The C++ code demonstrates a potential deadlock scenario where two threads attempt to acquire two mutex-protected resources in different orders. C++ does not automatically detect or prevent deadlocks. The expected behavior involves the program becoming deadlocked, with neither thread able to proceed.
 
 
+### C++ Raw Register
+```cpp
+#include <iostream>
+#include <cstdint>
+
+// Assuming registerAddress is the memory-mapped address of the register
+volatile uint32_t* registerAddress = reinterpret_cast<volatile uint32_t*>(0xaddress); // Replace "0xaddress" with the actual address
+
+int main() {
+    // Value to be written to the register
+    uint32_t valueToWrite = 0x00005A5A; // Replace with your desired value
+
+    // Write to the register using a pointer
+    *registerAddress = valueToWrite;
+
+    std::cout << "Value written to the register: " << std::hex << valueToWrite << std::endl;
+
+    return 0;
+}
+```
+
+
 
