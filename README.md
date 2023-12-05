@@ -6,7 +6,7 @@ An Evaluation of Rust and C++ as System Level Languages for their Security and P
 ## Buffer Overflow
 A common security vulnerability is the undefined behavior when a buffer overflow occurs.
 In Rust:
-```
+```rust
 fn buffer_overflow() {
     let mut buffer = [0_u8; 3];
     unsafe {
@@ -29,7 +29,7 @@ warning: `rs-benchmarks` (bin "rs-benchmarks") generated 1 warning
 error: could not compile `rs-benchmarks` (bin "rs-benchmarks") due to previous error; 1 warning emitted
 ```
 Now if we specify the index of the buffer as an argument, as:
-```
+```rust
 fn buffer_overflow(index: usize) {
     let mut buffer = [0u8; 3];
     unsafe {
@@ -73,7 +73,7 @@ thread 'main' panicked at 'index out of bounds: the len is 3 but the index is 4'
 ### Null Pointer Dereferencing in Rust
 Rust Code:
 
-```
+```rust
 // Null Pointer Dereferencing in Rust
 fn null_pointer_dereference(ptr: *const i32) {
     unsafe {
@@ -95,7 +95,7 @@ error: attempt to dereference a null pointer: 0x0
 ### Memory Leak in Rust
 Rust Code:
 
-```
+```rust
 // Memory Leak in Rust
 fn memory_leak() {
     let data = Box::new(42); // Allocate memory on the heap
@@ -112,7 +112,7 @@ In Rust, memory leaks are less common due to ownership and borrowing concepts. H
 
 ### Use After Free in Rust
 Rust Code:
-```
+```rust
 // Use After Free in Rust
 fn use_after_free() {
     let data = Box::new(42); // Allocate memory on the heap
@@ -134,7 +134,7 @@ In Rust, attempting to use memory after it has been freed is unsafe and can resu
 error: use of possibly-dangling pointer: `data`
 ### Buffer Overflow in C++
 C++ Code:
-```
+```cpp
 #include <iostream>
 #include <vector>
 
@@ -155,7 +155,7 @@ In C++, buffer overflows are typically undefined behavior and can lead to memory
 
 ### Null Pointer Dereferencing in C++
 C++ Code:
-```
+```cpp
 #include <iostream>
 
 // Null Pointer Dereferencing in C++
@@ -178,7 +178,7 @@ In C++, dereferencing a null pointer is undefined behavior. The compiler may not
 ### Memory Leak in C++
 C++ Code:
 
-```
+```cpp
 #include <iostream>
 
 // Memory Leak in C++
@@ -197,7 +197,7 @@ C++ Documentation:
 In C++, managing memory is the developer's responsibility. The provided example intentionally leaks memory by not deallocating the heap-allocated memory. This can lead to long-running programs consuming more and more memory, potentially causing system instability.
 
 ### Use After Free in C++
-```
+```cpp
 #include <iostream>
 
 // Use After Free in C++
@@ -221,7 +221,7 @@ In C++, attempting to use memory after it has been freed is undefined behavior. 
 
 ### Race Conditions
 Rust Code:
-```
+```rust
 use std::sync::{Arc, Mutex};
 use std::thread;
 
@@ -250,7 +250,7 @@ Rust Documentation:
 In Rust, the code demonstrates a race condition where multiple threads concurrently access and modify a shared counter without proper synchronization. This can lead to unpredictable results, and in this case, the final count may not be what's expected due to the race condition. In Rust, the code demonstrates a race condition where multiple threads concurrently access and modify a shared counter without proper synchronization. Rust's ownership and borrowing system ensures memory safety but does not prevent race conditions. The expected behavior includes unpredictable results in the final count due to the race condition.
 
 C++ Code:
-```
+```cpp
 #include <iostream>
 #include <thread>
 #include <mutex>
@@ -282,7 +282,7 @@ In C++, the code demonstrates a similar race condition scenario where multiple t
 
 ### Deadlock
 Rust Code:
-```
+```rust
 use std::sync::{Mutex, Arc};
 use std::thread;
 
@@ -317,7 +317,7 @@ Rust Documentation:
 The Rust code demonstrates a potential deadlock scenario where two threads attempt to acquire two mutex-protected resources in a different order. Each thread holds one resource and attempts to acquire the other, resulting in a deadlock where neither thread can proceed. The Rust code showcases a potential deadlock scenario where two threads attempt to acquire two mutex-protected resources in different orders. Rust's ownership system ensures memory safety, but it doesn't inherently prevent deadlocks. The expected behavior involves the program becoming deadlocked, with neither thread able to proceed.
 
 C++ Code:
-```
+```cpp
 #include <iostream>
 #include <thread>
 #include <mutex>
